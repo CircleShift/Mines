@@ -83,6 +83,7 @@ Board.prototype = {
 			}
 			this.mines[y].splice(this.mines[y].indexOf(x), 1);
 		}
+		this.clock = setInterval(this.sec.bind(this), 1000);
 	},
 	
 	//Event managers
@@ -204,7 +205,10 @@ Board.prototype = {
 		
 		let x = xIn.value;
 		let y = yIn.value;
+		
 		let mines = mIn.value;
+		
+		if(parseFloat(dIn.value) !== 0) mines = Math.round(x*y*parseFloat(dIn.value));
 		
 		if(mines >= x*y-1) {
 			this.circle.className = "lose";
@@ -271,6 +275,5 @@ Board.prototype = {
 		
 		this.circle.className = "ingame";
 		this.running = true;
-		this.clock = setInterval(this.sec.bind(this), 1000);
 	}
 };

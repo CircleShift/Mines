@@ -15,29 +15,33 @@ div.selector{
 }
 
 div.game{
-	min-width: 25%;
-	margin-top: 50px;
+	min-width: 50%;
+	margin: 50px;
 }
 
-input{
+input, select{
 	padding: 5px;
 	margin: 5px;
 	background-color: #eee;
 	border: none;
 	border-radius: 5px;
 	transition-duration: 0.2s;
+	box-sizing: border-box;
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
 }
 
-input:hover{
+input:hover, select:hover{
 	background-color: #ccc;
 }
 
-input:focus{
+input:focus, select:focus{
 	background-color: #cef;
 	border: none;
 }
 
-input:active{
+input:active, select:active{
 	background-color: #cef;
 	border: none;
 }
@@ -67,7 +71,7 @@ h1{
 	
 	background-color: #eee;
 	
-	border-radius: 25%;
+	border-radius: 50px;
 }
 
 h1#mines{
@@ -88,8 +92,8 @@ table{
 }
 
 td{
-	width: 35px;
-	height: 35px;
+	width: 45px;
+	height: 45px;
 	
 	margin: 5px;
 	padding: 2px;
@@ -124,6 +128,7 @@ button#circle{
 	border: none;
 	border-radius: 50%;
 	box-sizing: border-box;
+	cursor: pointer;
 }
 
 button#circle:active{

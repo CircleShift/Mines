@@ -10,11 +10,22 @@
 	</head>
 	<body>
 		<div class="selector">
-			<label>Width: </label> <input id="x" min="4" value="6" type="number"></input>
+			<label>Width: </label> <input id="x" min="4" max="50" value="6" type="number"/>
 			<br>
-			<label>Height: </label> <input id="y" min="4" value="6" type="number"></input>
+			<label>Height: </label> <input id="y" min="4" value="6" type="number"/>
 			<br>
-			<label>Mines: </label> <input id="m" min="2" value="5" type="number"></input>
+			<label>Mines: </label> <input id="m" min="2" value="5" type="number"/>
+			<br>
+			<label>- OR -</label>
+			<br>
+			<label>Difficulty: </label>
+			<select id="d">
+				<option value="0.125">Easy</option>
+				<option value="0.15">Medium</option>
+				<option value="0.2">Hard</option>
+				<option value="0.25">Impossible</option>
+				<option value="0">Custom</option>
+			</select>
 		</div>
 		<br>
 		<div class="game">
@@ -28,6 +39,7 @@
 			var xIn = document.getElementById("x");
 			var yIn = document.getElementById("y");
 			var mIn = document.getElementById("m");
+			var dIn = document.getElementById("d");
 			var game = new Board();
 		</script>
 	</body>
