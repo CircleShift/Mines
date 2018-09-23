@@ -41,6 +41,10 @@
 			var mIn = document.getElementById("m");
 			var dIn = document.getElementById("d");
 			var game = new Board();
+			
+			mIn.addEventListener("change", function(){
+				if(dIn.value !== "0") dIn.value = "0";
+			});
 		</script>
 	</body>
 </html>

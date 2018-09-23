@@ -22,7 +22,7 @@ div.game{
 input, select{
 	padding: 5px;
 	margin: 5px;
-	background-color: #eee;
+	background-color: #ddd;
 	border: none;
 	border-radius: 5px;
 	transition-duration: 0.2s;
@@ -33,34 +33,34 @@ input, select{
 }
 
 input:hover, select:hover{
-	background-color: #ccc;
+	background-color: #bbb;
 }
 
 input:focus, select:focus{
-	background-color: #cef;
+	background-color: #bdf;
 	border: none;
 }
 
 input:active, select:active{
-	background-color: #cef;
+	background-color: #bdf;
 	border: none;
 }
 
 button{
 	padding: 5px;
 	margin: 5px;
-	background-color: #eee;
+	background-color: #ddd;
 	border: none;
 	border-radius: 5px;
 	transition-duration: 0.2s;
 }
 
 button:hover{
-	background-color: #ccc;
+	background-color: #bbb;
 }
 
 button:active{
-	background-color: #cef;
+	background-color: #bdf;
 	border: none;
 }
 
@@ -69,7 +69,7 @@ h1{
 	
 	display: inline;
 	
-	background-color: #eee;
+	background-color: #ddd;
 	
 	border-radius: 50px;
 }
@@ -98,7 +98,7 @@ td{
 	margin: 5px;
 	padding: 2px;
 	
-	background-color: #bbb;
+	background-color: #aaa;
 	
 	box-sizing: border-box;
 	
@@ -110,7 +110,7 @@ td{
 }
 
 td.wt:hover{
-	background-color: #777;
+	background-color: #ccc;
 }
 
 td.wt:active{
@@ -118,7 +118,7 @@ td.wt:active{
 }
 
 td.chkd{
-	background-color: #888;
+	background-color: #777;
 }
 
 /* Main button */
