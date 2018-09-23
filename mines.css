@@ -119,6 +119,7 @@ td.wt:active{
 
 td.chkd{
 	background-color: #777;
+	cursor: default;
 }
 
 /* Main button */
