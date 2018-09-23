@@ -3,13 +3,7 @@ var colors = ["blue", "limegreen", "orange", "red", "purple", "cyan", "gold", "b
 var mine = "\u25C9";
 
 function Board(){
-	this.sMines = document.getElementById("mines");
-	this.sTime = document.getElementById("time");
-	
-	this.circle = document.getElementById("circle");
-	
-	this.table = document.getElementById("gtable");
-	this.table.parentElement.addEventListener("contextmenu", function(e){e.preventDefault();});
+	table.parentElement.addEventListener("contextmenu", function(e){e.preventDefault();});
 	
 	this.mines = [[0]];
 	this.mTotal = 0;
@@ -32,7 +26,7 @@ Board.prototype = {
 	sec: function(){
 		let c = parseInt(this.sTime.textContent);
 		c++;
-		this.sTime.textContent = c;
+		sTime.textContent = c;
 	},
 	
 	//Game states
@@ -41,7 +35,7 @@ Board.prototype = {
 		this.running = false;
 		clearInterval(this.clock);
 		this.clock = -1;
-		this.circle.className = "win";
+		circle.className = "win";
 		
 		this.revealMines("#08d");
 	},
@@ -50,7 +44,7 @@ Board.prototype = {
 		this.running = false;
 		clearInterval(this.clock);
 		this.clock = -1;
-		this.circle.className = "lose";
+		circle.className = "lose";
 		
 		this.revealMines("black");
 		
@@ -127,7 +121,7 @@ Board.prototype = {
 			el.textContent = "!";
 			this.mChecked++;
 		}
-		this.sMines.textContent = this.mTotal - this.mChecked;
+		sMines.textContent = this.mTotal - this.mChecked;
 		e.preventDefault();
 	},
 	
@@ -141,7 +135,7 @@ Board.prototype = {
 	isChecked: function(x, y){
 		if(y >= this.boardDim[1] || y < 0) return true;
 		if(x >= this.boardDim[0] || x < 0) return true;
-		return this.table.children[y].children[x].className == "chkd";
+		return table.children[y].children[x].className == "chkd";
 	},
 	
 	numAround: function(x, y){
@@ -160,7 +154,7 @@ Board.prototype = {
 	},
 	
 	getMineEl: function(x, y){
-		return this.table.children[y].children[x];
+		return table.children[y].children[x];
 	},
 	
 	check: function(x, y){
@@ -201,7 +195,7 @@ Board.prototype = {
 	//Managing the board
 	
 	reset: function(){
-		this.circle.className = "loading";
+		circle.className = "loading";
 		
 		let x = xIn.value;
 		let y = yIn.value;
@@ -211,7 +205,7 @@ Board.prototype = {
 		if(parseFloat(dIn.value) !== 0) mines = Math.round(x*y*parseFloat(dIn.value));
 		
 		if(mines >= x*y-1) {
-			this.circle.className = "lose";
+			circle.className = "lose";
 			return;
 		}
 		
@@ -219,17 +213,17 @@ Board.prototype = {
 		
 		this.boardDim = [x, y];
 		
-		while(this.table.firstChild){
-			this.table.firstChild.remove();
+		while(table.firstChild){
+			table.firstChild.remove();
 		}
 		
 		this.mTotal = mines;
 		this.mChecked = 0;
 		this.mines = [];
 		this.checked = 0;
-		this.sMines.textContent = mines;
+		sMines.textContent = mines;
 		
-		this.sTime.textContent = 0;
+		sTime.textContent = 0;
 		if(this.clock !== -1) clearInterval(this.clock);
 		this.clock = -1;
 		
@@ -257,7 +251,7 @@ Board.prototype = {
 				}
 			}
 			
-			this.table.appendChild(row);
+			table.appendChild(row);
 		}
 		
 		while(mines > 0){
@@ -273,7 +267,7 @@ Board.prototype = {
 			}
 		}
 		
-		this.circle.className = "ingame";
+		circle.className = "ingame";
 		this.running = true;
 	}
 };
