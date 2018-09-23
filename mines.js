@@ -24,7 +24,7 @@ Board.prototype = {
 	//Second
 	
 	sec: function(){
-		let c = parseInt(this.sTime.textContent);
+		let c = parseInt(sTime.textContent);
 		c++;
 		sTime.textContent = c;
 	},
