@@ -189,6 +189,8 @@ Board.prototype = {
 		let n = this.numAround(x, y);
 		let e = this.getMineEl(x, y);
 		
+		if(e.textContent == "!") return;
+		
 		e.className = "chkd";
 		
 		if(n !== 0){
