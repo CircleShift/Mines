@@ -26,13 +26,17 @@
 				<option value="0.25">Impossible</option>
 				<option value="0">Custom</option>
 			</select>
+			<br>
+			<label>- OR -</label>
+			<br>
+			<button id="save" onclick="game.save()">Save Game</button> | <label for="fin">Choose Save File</label><input id="fin" type="file" accept=".mgs"/> <button id="load" onclick="game.loadFromFile()">Load Game</button>
 		</div>
 		<br>
 		<div class="game">
 			<h1 id="mines">0</h1><button id="circle" onclick="game.reset()"></button><h1 id="time">0</h1>
 			<br>
 			<table>
-				<tbody id="gtable"><tr><td class="wt">&#9673</td></tr></tbody>
+				<tbody id="gtable"><tr><td class="wt">&#9673;</td></tr></tbody>
 			</table>
 		</div>
 		<script>
@@ -41,12 +45,14 @@
 			var mIn = document.getElementById("m");
 			var dIn = document.getElementById("d");
 			
-			var  sMines = document.getElementById("mines");
+			var sMines = document.getElementById("mines");
 			var sTime = document.getElementById("time");
 			
 			var circle = document.getElementById("circle");
 			
 			var table = document.getElementById("gtable");
+			
+			var fileSel = document.getElementById("fin");
 			
 			var game = new Board();
 			

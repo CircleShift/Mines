@@ -17,6 +17,7 @@ function Board(){
 	
 	this.running = false;
 	this.started = false;
+	
 }
 
 Board.prototype = {
@@ -24,14 +25,14 @@ Board.prototype = {
 	//Second
 	
 	sec: function(){
-		let c = parseInt(sTime.textContent);
-		c++;
-		sTime.textContent = c;
+		this.time++;
+		sTime.textContent = this.time;
 	},
 	
 	//Game states
 	
 	win: function(){
+		if(!this.running) return;
 		this.running = false;
 		clearInterval(this.clock);
 		this.clock = -1;
@@ -41,6 +42,7 @@ Board.prototype = {
 	},
 	
 	lose: function(x, y){
+		if(!this.running) return;
 		this.running = false;
 		clearInterval(this.clock);
 		this.clock = -1;
@@ -63,20 +65,44 @@ Board.prototype = {
 		}
 	},
 	
-	start: function(x, y){
-		this.started = true;
+	closeToStart: function(x, y, sx, sy){
+		let length = Math.sqrt((x-sx)*(x-sx) + (y-sy)*(y-sy));
+		if(length <  1.5) return true;
+		return false;
+	},
+	
+	replaceMine: function(x, y, sx, sy){
 		let flag = false;
-		if(this.isMine(x, y)){
+		if(!this.isMine(x, y)) return;
+		while(!flag){
 			for(let i = 0; i < this.boardDim[1] && !flag; i++){
 				for(let j = 0; j < this.boardDim[0] && !flag; j++){
-					if(!this.isMine(j, i)){
+					if(!this.isMine(i, j) && !this.closeToStart(j, i, sx, sy) && Math.floor(Math.random()*4) == 0){
 						this.mines[i].push(j);
 						flag = true;
 					}
 				}
 			}
-			this.mines[y].splice(this.mines[y].indexOf(x), 1);
 		}
+		this.mines[y].splice(this.mines[y].indexOf(x), 1);
+	},
+	
+	start: function(x, y){
+		this.started = true;
+		
+		let dx = x;
+		this.replaceMine(dx, y, x, y);
+		this.replaceMine(dx, y+1, x, y);
+		this.replaceMine(dx, y-1, x, y);
+		dx++;
+		this.replaceMine(dx, y, x, y);
+		this.replaceMine(dx, y+1, x, y);
+		this.replaceMine(dx, y-1, x, y);
+		dx -= 2;
+		this.replaceMine(dx, y, x, y);
+		this.replaceMine(dx, y+1, x, y);
+		this.replaceMine(dx, y-1, x, y);
+		
 		this.clock = setInterval(this.sec.bind(this), 1000);
 	},
 	
@@ -86,7 +112,7 @@ Board.prototype = {
 		let el = e.target;
 		var x = parseInt(el.getAttribute("x")), y = parseInt(el.getAttribute("y"));
 		
-		if(!this.running || el.textContent !== "" || el.classList.contains("chkd")) return;
+		if(!this.running || el.textContent !== " " || el.classList.contains("chkd")) return;
 		
 		if(!this.started){
 			this.start(x, y);
@@ -115,7 +141,7 @@ Board.prototype = {
 			this.mChecked--;
 		}else if(el.textContent == "?"){
 			
-			el.textContent = "";
+			el.textContent = " ";
 		}else{
 			
 			el.textContent = "!";
@@ -195,8 +221,15 @@ Board.prototype = {
 	//Managing the board
 	
 	reset: function(){
+		setTimeout(this.loading(), 10);
+		setTimeout(this.setup.bind(this), 100);
+	},
+	
+	loading: function(){
 		circle.className = "loading";
-		
+	},
+	
+	setup: function(){
 		let x = xIn.value;
 		let y = yIn.value;
 		
@@ -204,8 +237,13 @@ Board.prototype = {
 		
 		if(parseFloat(dIn.value) !== 0) mines = Math.round(x*y*parseFloat(dIn.value));
 		
-		if(mines >= x*y-1) {
+		if(x <= 3 && y <= 3){
 			circle.className = "lose";
+			alert("Board size too small!");
+			return;
+		}else if(mines > x*y-9) {
+			circle.className = "lose";
+			alert("Too many mines selected!");
 			return;
 		}
 		
@@ -220,10 +258,13 @@ Board.prototype = {
 		this.mTotal = mines;
 		this.mChecked = 0;
 		this.mines = [];
+		
 		this.checked = 0;
+		
 		sMines.textContent = mines;
 		
-		sTime.textContent = 0;
+		this.time = 0;
+		sTime.textContent = this.time;
 		if(this.clock !== -1) clearInterval(this.clock);
 		this.clock = -1;
 		
@@ -238,6 +279,7 @@ Board.prototype = {
 			for(let j = 0; j < x; j++){
 				
 				let cell = document.createElement("td");
+				cell.textContent = " ";
 				cell.setAttribute("x", j);
 				cell.setAttribute("y", i);
 				cell.classList = ["wt"];
@@ -269,5 +311,178 @@ Board.prototype = {
 		
 		circle.className = "ingame";
 		this.running = true;
+	},
+	
+	// Loading a previously saved game
+	
+	getSaveData: function(){
+		var data = {};
+		
+		data.mines = this.mines;
+		data.mTotal = this.mTotal;
+		data.checked = this.checked;
+		data.time = this.time;
+		
+		var boardState = [];
+		
+		for(var i = 0; i < table.children.length; i++){
+			boardState.push([]);
+			let row = table.children[i];
+			for(var j = 0; j < row.children.length; j++){
+				if(row.children[j].textContent == " "){
+					if(row.children[j].classList.contains("chkd")) boardState[i].push("0");
+					else boardState[i].push(" ");
+				}else boardState[i].push(row.children[j].textContent);
+			}
+		}
+		
+		data.boardState = boardState;
+		
+		return data;
+	},
+	
+	loadSaveData: function(e){
+		if(this.clock !== -1) clearInterval(this.clock);
+		this.clock = -1;
+		
+		var data;
+		
+		try{
+			data = JSON.parse(e.target.result);
+		}catch(err){
+			this.loadError(err);
+			return;
+		}
+		
+		while(table.firstChild){
+			table.firstChild.remove();
+		}
+		
+		this.mines = data.mines;
+		this.mTotal = data.mTotal;
+		this.mChecked = 0;
+		
+		this.boardDim = [data.boardState[0].length, data.boardState.length];
+		this.checked = data.checked;
+		
+		this.time = data.time;
+		
+		var finFlag = false;
+		
+		for(let i = 0; i < data.boardState.length; i++){
+			
+			let row = document.createElement("tr");
+			
+			this.mines.push([]);
+			
+			for(let j = 0; j < data.boardState[0].length; j++){
+				
+				let cell = document.createElement("td");
+				cell.classList = ["wt"];
+				
+				switch(data.boardState[i][j]){
+					case mine:
+						finFlag = true;
+					case "!":
+						this.mChecked++;
+					default:
+						cell.textContent = data.boardState[i][j];
+						let n = parseInt(data.boardState[i][j]);
+						if(!isNaN(n)){
+							cell.style.color = colors[n-1];
+							cell.className = "chkd";
+						}
+						break;
+						
+					case "0":
+						cell.className = "chkd";
+						cell.textContent = " ";
+						break;
+				}
+				
+				cell.setAttribute("x", j);
+				cell.setAttribute("y", i);
+				
+				cell.addEventListener("click", this.click.bind(this));
+				cell.addEventListener("contextmenu", this.ctxMenu.bind(this));
+				row.appendChild(cell);
+				
+				if(mines > 0 && Math.floor(Math.random()*mRarity) == 0){
+					this.mines[i].push(j);
+					mines--;
+				}
+			}
+			
+			table.appendChild(row);
+		}
+		
+		sMines.textContent = this.mTotal - this.mChecked;
+		sTime.textContent = this.time;
+		
+		this.clock = setInterval(this.sec.bind(this), 1000);
+		
+		circle.className = "ingame";
+		
+		this.running = true;
+		this.started = true;
+		
+		if(finFlag){
+			if(this.checked == (this.boardDim[0]*this.boardDim[1] - this.mTotal)) this.win();
+			else this.lose();
+		}
+	},
+	
+	loadError: function(err){
+		alert("Error loading previously saved game!\nCheck the console for more info.");
+		throw err;
+	},
+	
+	save: function(){
+		if(!this.started){
+			alert("Start a game to save it!");
+			return;
+		}
+		var dat = this.getSaveData();
+		download(JSON.stringify(dat), "MinesSave.mgs", "text/plain");
+	},
+	
+	loadFromFile: function(){
+		if(this.running){
+			this.running = false;
+			clearInterval(this.clock);
+			this.clock = -1;
+			circle.className = "loading";
+		}
+		
+		if(fileSel.files.length < 1){
+			alert("No file selected!");
+			return;
+		}
+		var file = fileSel.files[0];
+		var fr = new FileReader();
+		fr.addEventListener("load", this.loadSaveData.bind(this));
+		fr.addEventListener("error", this.loadError);
+		
+		fr.readAsText(file);
 	}
 };
+
+//Taken from Kanchu on Sack Overflow
+//Reference: https://stackoverflow.com/questions/13405129/javascript-create-and-save-file
+function download(data, filename, type) {
+	var file = new Blob([data], {type: type});
+	if (window.navigator.msSaveOrOpenBlob) // IE10+
+		window.navigator.msSaveOrOpenBlob(file, filename);
+	else { // Others
+		var a = document.createElement("a"),
+				url = URL.createObjectURL(file);
+		a.href = url;
+		a.download = filename;
+		document.body.appendChild(a);
+		a.click();
+		setTimeout(function() {
+			document.body.removeChild(a);
+			window.URL.revokeObjectURL(url);  
+		}, 0); 
+	}
+}
