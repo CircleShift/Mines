@@ -77,7 +77,7 @@ Board.prototype = {
 		while(!flag){
 			for(let i = 0; i < this.boardDim[1] && !flag; i++){
 				for(let j = 0; j < this.boardDim[0] && !flag; j++){
-					if(!this.isMine(i, j) && !this.closeToStart(j, i, sx, sy) && Math.floor(Math.random()*4) == 0){
+					if(!this.isMine(j, i) && !this.closeToStart(j, i, sx, sy) && Math.floor(Math.random()*4) == 0){
 						this.mines[i].push(j);
 						flag = true;
 					}
